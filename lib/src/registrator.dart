@@ -226,15 +226,22 @@ class Registrator {
             }
           }, (expires * 1000) - 5000);
 
-          // Save gruu values.
-          if (contact.hasParam('temp-gruu')) {
-            _ua.contact!.temp_gruu =
-                contact.getParam('temp-gruu').replaceAll('"', '');
-          }
-          if (contact.hasParam('pub-gruu')) {
-            _ua.contact!.pub_gruu =
-                contact.getParam('pub-gruu').replaceAll('"', '');
-          }
+          // GRUU disabled (eltropy): do NOT adopt the registrar's pub-gruu /
+          // temp-gruu as our Contact. Contact.toString() returns
+          // `pub_gruu ?? uri`, so saving these makes the 200 OK Contact the
+          // GRUU (`sip:2991@domain;gr=...`) — which Kamailio does not route the
+          // in-dialog 2xx ACK back to over WebSocket (ACK never arrives, 200 OK
+          // retransmits, caller-side stays up). The working web client (SIP.js)
+          // advertises its plain registered `.invalid` contact instead. Keep the
+          // plain contact so the ACK reaches our registered binding.
+          // if (contact.hasParam('temp-gruu')) {
+          //   _ua.contact!.temp_gruu =
+          //       contact.getParam('temp-gruu').replaceAll('"', '');
+          // }
+          // if (contact.hasParam('pub-gruu')) {
+          //   _ua.contact!.pub_gruu =
+          //       contact.getParam('pub-gruu').replaceAll('"', '');
+          // }
 
           if (!_registered) {
             _registered = true;
