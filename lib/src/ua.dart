@@ -894,12 +894,19 @@ class UA extends EventManager {
     }
     // Contact URI.
     else {
+      // _configuration.contact_uri = URI(
+      //     'sip',
+      //     Utils.createRandomToken(8),
+      //     _configuration.via_host,
+      //     null,
+      //     <dynamic, dynamic>{'transport': transport});
+
       _configuration.contact_uri = URI(
           'sip',
-          Utils.createRandomToken(8),
+          _configuration.authorization_user,
           _configuration.via_host,
           null,
-          <dynamic, dynamic>{'transport': transport});
+          <dynamic, dynamic>{'transport': 'ws'});
     }
     _contact = Contact(_configuration.contact_uri);
     return;
