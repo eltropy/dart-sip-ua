@@ -833,8 +833,11 @@ class RTCSession extends EventManager implements Owner {
           };
 
           // .., or when the INVITE transaction times out
+          // NOTE: `server_transaction.on(...)` is a dynamic call, so generic T
+          // defaults to base EventType — the listener must accept `dynamic`
+          // (it's unused) or hangup-before-ACK throws a runtime subtype error.
           _request.server_transaction.on(EventStateChanged(),
-              (EventStateChanged state) {
+              (dynamic state) {
             if (_request.server_transaction.state ==
                 TransactionState.TERMINATED) {
               sendRequest(SipMethod.BYE, <String, dynamic>{
