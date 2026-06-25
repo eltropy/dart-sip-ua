@@ -894,16 +894,13 @@ class UA extends EventManager {
     }
     // Contact URI.
     else {
-      // _configuration.contact_uri = URI(
-      //     'sip',
-      //     Utils.createRandomToken(8),
-      //     _configuration.via_host,
-      //     null,
-      //     <dynamic, dynamic>{'transport': transport});
-
+      // Match the working web client (SIP.js): a RANDOM-token Contact user with
+      // transport=ws. Using `authorization_user` as the Contact user broke the
+      // in-dialog 2xx ACK routing on the WS PBX (web uses the random default and
+      // works). Keep transport=ws (required by the PBX); revert the user part.
       _configuration.contact_uri = URI(
           'sip',
-          _configuration.authorization_user,
+          Utils.createRandomToken(8),
           _configuration.via_host,
           null,
           <dynamic, dynamic>{'transport': 'ws'});
