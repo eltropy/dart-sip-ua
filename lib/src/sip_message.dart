@@ -543,11 +543,13 @@ class IncomingRequest extends IncomingMessage {
 
     reason = reason ?? null;
 
-    // Validate code and reason values.
+    // Validate code and reason values. JsSIP only rejects a NON-string
+    // reason; `reason` is already typed String? here, so any value is valid.
+    // (The port's `reason != null` check made every internal
+    // reply(403, 'Wrong Status') / reply(487, 'BYE Received') / ... throw
+    // instead of answering.)
     if (code < 100 || code > 699) {
       throw Exceptions.TypeError('Invalid status_code: $code');
-    } else if (reason != null) {
-      throw Exceptions.TypeError('Invalid reason_phrase: $reason');
     }
 
     reason = reason ?? DartSIP_C.REASON_PHRASE[code] ?? '';
